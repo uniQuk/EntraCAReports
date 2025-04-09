@@ -1,0 +1,112 @@
+{
+  "appMappings": {
+    "00000000-0000-0000-0000-000000000000": "O365",
+    "1b730954-1685-4b74-9bfd-dac224a7b894": "MS365",
+    "00000003-0000-0000-c000-000000000000": "Graph",
+    "00000002-0000-0ff1-ce00-000000000000": "AAD",
+    "00000015-0000-0000-c000-000000000000": "SP",
+    "00000007-0000-0000-c000-000000000000": "EXO",
+    "00000003-0000-0ff1-ce00-000000000000": "SPO",
+    "4765445b-32c6-49b0-83e6-1d93765276ca": "DP",
+    "c00e9d32-3c73-4135-963f-6755e9753b61": "PW",
+    "29d9ed98-a469-4536-ade2-f981bc1d605e": "MDA",
+    "7df0a125-d3be-4c96-aa54-591f83ff541c": "MDI",
+    "a0c73c16-a7e3-4564-9a95-2bdf47383716": "MDE",
+    "00000004-0000-0ff1-ce00-000000000000": "LY",
+    "70d33638-9c74-4d01-bfd3-562de28bd4ba": "OMI",
+    "8fca0a66-7b57-4d9d-80fa-c93f4f0d678f": "RB",
+    "66a88757-258c-4c72-893c-3e8bed4d6899": "MCAS",
+    "2634dd23-5e5a-431c-81ca-11710d9079f4": "MDCA",
+    "fc780465-2017-40d4-a0c5-307022471b92": "MIP"
+  },
+  "categorization": {
+    "all": "all",
+    "admin": ["Admin", "Administrator", "Privileged", "Role", "Global"],
+    "emergency": ["Emergency", "Break", "Glass"],
+    "device": ["Device", "Compliant", "MFA", "Multi", "Factor"]
+  },
+  "namingConventions": {
+    "Simple": {
+      "format": "CA{NUM} - {PURPOSE}",
+      "description": "Simple sequential format with purpose",
+      "example": "CA01 - Require MFA for Administrators"
+    },
+    "MS": {
+      "format": "CA-{CATEGORY}-{NUM} - {PURPOSE}",
+      "description": "Microsoft recommended format with category and purpose",
+      "example": "CA-Global-001 - All users: Register security information"
+    },
+    "ASD": {
+      "format": "{TYPE}-{ACTION}-{PURPOSE}",
+      "description": "ASD Blueprint format with type, action, and descriptive purpose",
+      "example": "ADM-S-Limit admin sessions"
+    }
+  },
+  "categoryPrefixes": {
+    "MS": {
+      "Global": "Global",
+      "Admins": "Admin",
+      "Internals": "Internal",
+      "GuestUsers": "Guest"
+    }
+  },
+  "asdTypes": {
+    "admin": "ADM",
+    "device": "DEV",
+    "guest": "GST",
+    "location": "LOC",
+    "default": "USR",
+    "application": "APP",
+    "workload": "WKL",
+    "other": "OTH"
+  },
+  "asdPurposes": {
+    "admin": {
+      "session": "SessionControls",
+      "compliantDevice": "RequireCompliantDevice",
+      "mfa": "RequireMFA",
+      "block": "Block"
+    },
+    "device": {
+      "compliantDevice": "RequireCompliantDevice", 
+      "mfa": "RequireMFA",
+      "block": "Block"
+    },
+    "user": {
+      "block": {
+        "legacy": "BlockLegacyAuth",
+        "risk": "BlockHighRisk",
+        "default": "BlockAccess"
+      },
+      "session": "SessionControls",
+      "mfa": "RequireMFA",
+      "compliantDevice": "RequireCompliantDevice"
+    },
+    "guest": {
+      "block": "BlockGuests",
+      "session": "GuestSessionControls",
+      "mfa": "GuestMFA"
+    },
+    "location": {
+      "block": "BlockUntrustedLocation",
+      "mfa": "MFAFromUntrustedLocation"
+    },
+    "application": {
+      "block": "BlockAppAccess",
+      "session": "AppSessionControls",
+      "mfa": "AppMFA",
+      "protection": "AppProtection"
+    },
+    "workload": {
+      "block": "BlockWorkloadAccess",
+      "authentication": "WorkloadAuthentication",
+      "restriction": "WorkloadRestriction"
+    },
+    "other": {
+      "block": "BlockAccess",
+      "session": "SessionControls",
+      "mfa": "RequireMFA",
+      "risk": "RiskBased"
+    }
+  }
+} 

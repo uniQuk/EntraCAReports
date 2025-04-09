@@ -1,0 +1,8 @@
+{
+    "module": "EntraCAReports",
+    "publishSettings": {
+        "version": "0.1.0",
+        "publishThisVersion": true,
+        "releaseNotes": "Initial release of EntraCAReports module"
+    }
+}
