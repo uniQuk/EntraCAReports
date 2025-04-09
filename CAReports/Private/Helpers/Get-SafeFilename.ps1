@@ -8,19 +8,19 @@ function Get-SafeFilename {
         and handling other edge cases. This is useful for creating filenames from
         policy names or other user-provided strings.
     
-    .PARAMETER Name
+    .PARAMETER DisplayName
         The string to sanitize into a safe filename.
     
     .PARAMETER DefaultName
         The default name to use if the input is null, empty, or consists entirely of invalid characters.
     
     .EXAMPLE
-        Get-SafeFilename -Name "My Policy: With Invalid * Characters?"
+        Get-SafeFilename -DisplayName "My Policy: With Invalid * Characters?"
         
         Returns: "My_Policy_With_Invalid_Characters"
     
     .EXAMPLE
-        Get-SafeFilename -Name $null -DefaultName "policy"
+        Get-SafeFilename -DisplayName $null -DefaultName "policy"
         
         Returns: "policy"
     
@@ -31,15 +31,15 @@ function Get-SafeFilename {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $false, Position = 0)]
-        [Alias("Filename", "OriginalName", "DisplayName")]
-        [string]$Name,
+        [Alias("Name", "Filename", "OriginalName")]
+        [string]$DisplayName,
         
         [Parameter(Mandatory = $false)]
         [string]$DefaultName = "unnamed_policy"
     )
     
     # Return default name if input is null or empty
-    if ([string]::IsNullOrWhiteSpace($Name)) {
+    if ([string]::IsNullOrWhiteSpace($DisplayName)) {
         return $DefaultName
     }
 
@@ -48,7 +48,7 @@ function Get-SafeFilename {
     $replacement = '_'
     
     # Replace invalid chars and control chars
-    $safeName = [RegEx]::Replace($Name, "[$([RegEx]::Escape(-join $invalids))]", $replacement)
+    $safeName = [RegEx]::Replace($DisplayName, "[$([RegEx]::Escape(-join $invalids))]", $replacement)
     
     # Replace spaces with underscores
     $safeName = $safeName -replace '\s+', '_'

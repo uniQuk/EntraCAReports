@@ -73,52 +73,6 @@ function Get-CAPolicy {
     )
     
     begin {
-        # Local implementation of the Get-SafeFilename function to avoid parameter name issues
-        function Local-SafeFilename {
-            param(
-                [string]$DisplayName,
-                [string]$DefaultName = "unnamed_policy"
-            )
-            
-            # Return default name if input is null or empty
-            if ([string]::IsNullOrWhiteSpace($DisplayName)) {
-                return $DefaultName
-            }
-
-            # Get invalid characters
-            $invalids = [System.IO.Path]::GetInvalidFileNameChars()
-            $replacement = '_'
-            
-            # Replace invalid chars and control chars
-            $safeName = [RegEx]::Replace($DisplayName, "[$([RegEx]::Escape(-join $invalids))]", $replacement)
-            
-            # Replace spaces with underscores
-            $safeName = $safeName -replace '\s+', '_'
-            
-            # Replace multiple consecutive underscores with single underscore
-            $safeName = $safeName -replace '_{2,}', '_'
-            
-            # Trim underscores from start and end
-            $safeName = $safeName.Trim('_')
-            
-            # Return default name if result is empty
-            if ([string]::IsNullOrWhiteSpace($safeName)) {
-                return $DefaultName
-            }
-            
-            # Truncate if too long (Windows max path is 260, leave room for path and extension)
-            $maxLength = 200
-            if ($safeName.Length -gt $maxLength) {
-                $safeName = $safeName.Substring(0, $maxLength)
-                $safeName = $safeName.TrimEnd('_')
-            }
-            
-            # Ensure name doesn't end with a period (can cause issues on Windows)
-            $safeName = $safeName -replace '\.$', '_'
-            
-            return $safeName
-        }
-    
         # Check if we're connected to Microsoft Graph
         if (-not $script:CAConfig.ConnectionStatus) {
             throw "Not connected to Microsoft Graph. Run Connect-CAGraph first."
@@ -174,8 +128,10 @@ function Get-CAPolicy {
             # Save original policies if requested
             if ($SaveOriginal) {
                 foreach ($policy in $policies) {
-                    $fileName = Local-SafeFilename -DisplayName $policy.displayName -DefaultName $policy.id
-                    $policy | ConvertTo-Json -Depth 100 | Out-File (Join-Path $originalPath "$fileName.json")
+                    $fileName = Get-SafeFilename -DisplayName $policy.displayName -DefaultName $policy.id
+                    $filePath = Join-Path -Path $originalPath -ChildPath "$fileName.json"
+                    $policy | ConvertTo-Json -Depth 10 | Out-File -FilePath $filePath -Encoding utf8
+                    Write-Verbose "Saved original policy to: $filePath"
                 }
                 Write-Verbose "Original policies saved to $originalPath"
             }
@@ -298,8 +254,10 @@ function Get-CAPolicy {
                     
                     # Save enhanced policy if requested
                     if ($SaveEnhanced) {
-                        $fileName = Local-SafeFilename -DisplayName $policy.displayName -DefaultName $policy.id
-                        $enhancedPolicy | ConvertTo-Json -Depth 100 | Out-File (Join-Path $enhancedPath "$fileName.json")
+                        $fileName = Get-SafeFilename -DisplayName $policy.displayName -DefaultName $policy.id
+                        $filePath = Join-Path -Path $enhancedPath -ChildPath "$fileName.json"
+                        $enhancedPolicy | ConvertTo-Json -Depth 10 | Out-File -FilePath $filePath -Encoding utf8
+                        Write-Verbose "Saved enhanced policy to: $filePath"
                     }
                 }
                 

@@ -39,12 +39,15 @@ $HelperFunctions = @(
     "$PSScriptRoot\Private\Helpers\Get-SafeFilename.ps1"
 )
 
-# Import the helpers first
+# Import the helpers first and make them available in the module scope
 foreach ($Helper in $HelperFunctions) {
     if (Test-Path $Helper) {
         try {
             Write-Verbose "Importing helper function: $Helper"
+            # Dot source the helper function into the module scope
             . $Helper
+            # Export the helper function to make it available to other functions
+            Export-ModuleMember -Function (Get-Item $Helper).BaseName
         }
         catch {
             Write-Error -Message "Failed to import helper function $Helper`: $_"
